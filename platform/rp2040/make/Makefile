@@ -24,6 +24,10 @@ CFLAGS += -funsigned-char -funsigned-bitfields
 CFLAGS += -mcpu=cortex-m0plus -mthumb
 CFLAGS += -MD -MP -MT $(BUILD)/$(*F).o -MF $(BUILD)/$(@F).d
 
+ifeq ($(XIAO),1)
+CFLAGS += -DXIAO_PINOUT=1
+endif
+
 LDFLAGS += -mcpu=cortex-m0plus -mthumb
 LDFLAGS += -nostartfiles
 LDFLAGS += -Wl,--gc-sections
