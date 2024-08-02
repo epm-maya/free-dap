@@ -1,6 +1,17 @@
 ##############################################################################
+
+ifeq ($(XIAO),1)
+BUILD = build_xiao
+BIN = free_dap_xiao_8kbl
+else
+ifeq ($(QTPY),1)
+BUILD = build_qtpy
+BIN = free_dap_qtpy_8kbl
+else
 BUILD = build
 BIN = free_dap_d21_8kbl
+endif
+endif
 
 ##############################################################################
 .PHONY: all directory clean size
@@ -46,8 +57,17 @@ SRCS += \
   ../startup_samd21.c \
   ../../../dap.c \
 
+ifeq ($(XIAO),1)
+DEFINES += -D__SAMD21G18A__
+else
+ifeq ($(QTPY),1)
+DEFINES += -D__SAMD21E18A__
+else
+DEFINES += -D__SAMD21J18A__
+endif
+endif
+
 DEFINES += \
-  -D__SAMD21J18A__ \
   -DDONT_USE_CMSIS_INIT \
   -DF_CPU=48000000
 
@@ -55,6 +75,10 @@ CFLAGS += $(INCLUDES) $(DEFINES)
 
 ifeq ($(XIAO),1)
 CFLAGS += -DXIAO_PINOUT=1
+endif
+
+ifeq ($(QTPY),1)
+CFLAGS += -DQTPY_PINOUT=1
 endif
 
 OBJS = $(addprefix $(BUILD)/, $(notdir %/$(subst .c,.o, $(SRCS))))
